@@ -16,10 +16,11 @@ def makePlot():
 
     totEntries = 1 + len(bkgs)
     #leg = ROOT.TLegend(.5, 1.0-totEntries*0.06, .92, .90)
-    leg = ROOT.TLegend(.63, 0.97-(len(bkgs)+2)*0.055, .95, .90)
+    leg = ROOT.TLegend(.45, 0.97-(len(bkgs)+2)*0.055, .95, .90)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0)
-    leg.SetTextSize(0.035)
+    leg.SetTextSize(0.03)
+    leg.SetMargin(0.2)
     
     ret_hists = []
     h_sig = None
@@ -71,9 +72,9 @@ def makePlot():
         'logx'              : False,
         
         'xmin'              : 0,
-        'xmax'              : 7,
+        'xmax'              : len(cuts),
         'ymin'              : 1e4,
-        'ymax'              : 1e9 ,
+        'ymax'              : 1e10 ,
             
         'xtitle'            : "",
         'ytitle'            : "Events",
@@ -129,15 +130,14 @@ if __name__ == "__main__":
         sig_scale = 10
         sig_legend = "Z(#mu^{+}#mu^{#minus})H (10#times)"
     
-        bkgs = ["WW", "ZZ", "Zgmumu", "Zgtautau"] # this is the order of the plot
-        bkgs_legends = ["W^{+}W^{#minus}", "ZZ", "Z/#gamma^{*} #rightarrow #mu^{+}#mu^{#minus}", "Z/#gamma^{*} #rightarrow #tau^{+}#tau^{#minus}"]
+        bkgs = ["WW", "ZZ", "Zg", "rare"] # this is the order of the plot
+        bkgs_legends = ["W^{+}W^{#minus}", "ZZ", "Z/#gamma^{*} #rightarrow #mu^{+}#mu^{#minus}, #tau^{+}#tau^{#minus}", "Rare (e(e)Z, #gamma#gamma #rightarrow #mu^{+}#mu^{#minus}, #tau^{+}#tau^{#minus})"]
         bkgs_colors = [ROOT.TColor.GetColor(248, 206, 104), ROOT.TColor.GetColor(222, 90, 106), ROOT.TColor.GetColor(100, 192, 232), ROOT.TColor.GetColor(155, 152, 204)] # from
         bgks_cfg = { 
-            "WW"	    : ["p8_ee_WW_mumu_ecm240"],
-            "ZZ"	    : ["p8_ee_ZZ_Zll_ecm240"],
-            "Zgmumu"    : ["wzp6_ee_mumu_ecm240"],
-            "Zgtautau"  : ["wzp6_ee_tautau_ecm240"]
-            #"RARE"	: ["wzp6_egamma_eZ_Zmumu_ecm240", "wzp6_gammae_eZ_Zmumu_ecm240", "wzp6_gaga_mumu_60_ecm240", "wzp6_gaga_tautau_60_ecm240"],
+            "WW"	    : ["p8_ee_WW_ecm240"],
+            "ZZ"	    : ["p8_ee_ZZ_ecm240"],
+            "Zg"        : ["wzp6_ee_mumu_ecm240", "wzp6_ee_tautau_ecm240"],
+            "rare"      : ["wzp6_egamma_eZ_Zmumu_ecm240", "wzp6_gammae_eZ_Zmumu_ecm240", "wzp6_gaga_mumu_60_ecm240", "wzp6_gaga_tautau_60_ecm240", "wzp6_ee_nuenueZ_ecm240"]
         }
         
     if flavor == "ee":
@@ -148,15 +148,15 @@ if __name__ == "__main__":
         sig_scale = 10
         sig_legend = "Z(e^{+}e^{#minus})H (10#times)"
     
-        bkgs = ["WW", "ZZ", "Zgee", "Zgtautau"] # this is the order of the plot
-        bkgs_legends = ["W^{+}W^{#minus}", "ZZ", "Z/#gamma^{*} #rightarrow e^{+}e^{#minus}", "Z/#gamma^{*} #rightarrow #tau^{+}#tau^{#minus}"]
+        bkgs = ["WW", "ZZ", "Zg", "rare"] # this is the order of the plot
+        bkgs_legends = ["W^{+}W^{#minus}", "ZZ", "Z/#gamma^{*} #rightarrow e^{+}e^{#minus}, #tau^{+}#tau^{#minus}", "Rare (e(e)Z, #gamma#gamma #rightarrow e^{+}e^{#minus}, #tau^{+}#tau^{#minus})"]
+        
         bkgs_colors = [ROOT.TColor.GetColor(248, 206, 104), ROOT.TColor.GetColor(222, 90, 106), ROOT.TColor.GetColor(100, 192, 232), ROOT.TColor.GetColor(155, 152, 204)] # from
         bgks_cfg = { 
             "WW"	    : ["p8_ee_WW_ecm240"],
-            "ZZ"	    : ["p8_ee_ZZ_Zll_ecm240"],
-            "Zgee"      : ["wzp6_ee_ee_Mee_30_150_ecm240"],
-            "Zgtautau"  : ["wzp6_ee_tautau_ecm240"]
-            #"RARE"	: ["wzp6_egamma_eZ_Zmumu_ecm240", "wzp6_gammae_eZ_Zmumu_ecm240", "wzp6_gaga_mumu_60_ecm240", "wzp6_gaga_tautau_60_ecm240"],
+            "ZZ"	    : ["p8_ee_ZZ_ecm240"],
+            "Zg"        : ["wzp6_ee_ee_Mee_30_150_ecm240", "wzp6_ee_tautau_ecm240"],
+            "rare"      : ["wzp6_egamma_eZ_Zee_ecm240", "wzp6_gammae_eZ_Zee_ecm240", "wzp6_gaga_ee_60_ecm240", "wzp6_gaga_tautau_60_ecm240", "wzp6_ee_nuenueZ_ecm240"]
         }
     
     
@@ -174,6 +174,7 @@ if __name__ == "__main__":
             #if j == 0: histProc.Scale(1./sig_scale)
             yield_, err = histProc.GetBinContent(i+1), histProc.GetBinError(i+1)
             row.append("%.2e %.2f" % (yield_, err))
+            print(histProc, yield_, err)
         rows.append(row)
         
         

@@ -27,9 +27,15 @@ Vec_tlv makeLorentzVectors(Vec_rp in) {
 	return result;
 }
 
+float inv_mass(Vec_tlv in){
+    TLorentzVector c;
+    for (int i=0; i<in.size(); i++){
+        c = c + in[i];
+                                   }
+     
+     return c.M() ;
 
-
-    
+}    
 }
 
 #endif
