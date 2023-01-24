@@ -1,4 +1,3 @@
-
 import analysis, functions
 import ROOT
 import argparse
@@ -11,9 +10,10 @@ args = parser.parse_args()
 functions.set_threads(args)
 
 # define histograms
-bins_p_mu = (20000, 0, 200) # 10 MeV bins
+bins_p_mu = (20000, 0, 300) # 10 MeV bins
 bins_m_ll = (20000, 0, 300) # 10 MeV bins
-bins_p_ll = (20000, 0, 200) # 10 MeV bins
+bins_p_ll = (20000, 0, 300) # 10 MeV bins
+bins_missing_energy = (2000,0,100)
 
 bins_theta = (500, -5, 5)
 bins_phi = (500, -5, 5)
@@ -48,18 +48,28 @@ def build_graph_ll(df, dataset):
     df = df.Define("leps_all_phi", "FCCAnalyses::ReconstructedParticle::get_phi(leps_all)")
     df = df.Define("leps_all_q", "FCCAnalyses::ReconstructedParticle::get_charge(leps_all)")
     df = df.Define("leps_all_no", "FCCAnalyses::ReconstructedParticle::get_n(leps_all)")
-    
     # construct Lorentz vectors of the leptons
     df = df.Define("leps_tlv", "FCCAnalyses::makeLorentzVectors(leps_all)")
+    df = df.Define("m_inv", "FCCAnalyses :: inv_mass(leps_tlv)")
     
+    #selections 
+    df = df.Filter("leps_all_no=2")
+    df = df.Filter("leps_all_theta<0.98")
+    df = df.Filter("leps_all_p>0.6")
+    df = df.Define("missingEnergy", "FCCAnalyses::missingEnergy(91., ReconstructedParticles)")
+    df = df.Define("emiss", "missingEnergy[0].energy")
+    #df = df.Filter("emiss<22.45")
+    df = df.Filter("m_inv>51.64999")
     results.append(df.Histo1D(("leps_all_p", "", *bins_p_mu), "leps_all_p"))
     results.append(df.Histo1D(("leps_all_theta", "", *bins_theta), "leps_all_theta"))
     results.append(df.Histo1D(("leps_all_phi", "", *bins_phi), "leps_all_phi"))
     results.append(df.Histo1D(("leps_all_q", "", *bins_charge), "leps_all_q"))
     results.append(df.Histo1D(("leps_all_no", "", *bins_count), "leps_all_no"))
-    
+    results.append(df.Histo1D(("m_inv", "", *bins_m_ll), "m_inv"))
+    results.append(df.Histo1D(("emiss","",*bins_missing_energy),"emiss"))
     
     return results, weightsum
+    
     
  
     
@@ -71,7 +81,8 @@ if __name__ == "__main__":
     import FCCee_spring2021_ecm91_IDEA
     datasets_spring2021_ecm91 = FCCee_spring2021_ecm91_IDEA.get_datasets(baseDir=baseDir) # list of all datasets
     datasets = [] # list of datasets to be run over
-
+    datasets += functions.filter_datasets(datasets_spring2021_ecm91, ["p8_ee_Ztautau_ecm91"])
+    
     datasets += functions.filter_datasets(datasets_spring2021_ecm91, ["p8_ee_Zmumu_ecm91"])
     result = functions.build_and_run(datasets, build_graph_ll, "tmp/output_xsec_example.root", maxFiles=args.maxFiles)
 
