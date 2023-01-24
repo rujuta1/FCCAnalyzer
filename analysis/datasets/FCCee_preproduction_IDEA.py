@@ -76,8 +76,8 @@ def get_datasets(baseDir = ""):
     
     ##############################################################
     # winter v2 (electrons smeared with twice the resolution)
-    #winter_v2 = "/eos/experiment/fcc/ee/generation/DelphesStandalone/Edm4Hep/pre_winter2023_tests_v2"
-    winter_v2 = "/data/shared/jaeyserm/fccee/pre_winter2023_tests_v2"
+    winter_v2 = "/eos/experiment/fcc/ee/generation/DelphesStandalone/Edm4Hep/pre_winter2023_tests_v2"
+    #winter_v2 = "/data/shared/jaeyserm/fccee/pre_winter2023_tests_v2"
     winter_v1 = "/eos/experiment/fcc/ee/generation/DelphesStandalone/Edm4Hep/pre_winter2023_tests_v1"
     
     # muon signal
@@ -90,6 +90,12 @@ def get_datasets(baseDir = ""):
     datasets.append({
         "name"      : "wzp6_ee_mumuH_ecm240",
         "datadir"   : "%s/wzp6_ee_mumuH_ecm240/" % winter_v2,
+        "xsec"      : 0.0067643
+    })
+    
+    datasets.append({
+        "name"      : "wzp6_ee_mumuH_ecm240_winter",
+        "datadir"   : "/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA//wzp6_ee_mumuH_ecm240/",
         "xsec"      : 0.0067643
     })
     
